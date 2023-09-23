@@ -5,7 +5,7 @@ const sequelize= require('../utils/database')
 
 const user=sequelize.define('user',{
     id:{
-        type:Sequelize.STRING,
+        type:Sequelize.INTEGER,
         autoIncrement: true,
         primaryKey:true,
         allowNull: false
@@ -22,3 +22,4 @@ const user=sequelize.define('user',{
     
 })
 module.exports=user
+
