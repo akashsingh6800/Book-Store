@@ -12,28 +12,30 @@
               
             <article class="card product-item">
                 <header class="card__header">
-                    <h1 class="product__title"><%=product.productData.title %></h1>
+                    <h1 class="product__title"><%=product.title %></h1>
                 </header>
                 <div class="card__image">
-                    <img src="<%= product.productData.imageURL%>" alt="<%=product.productData.title %>">
+                    <img src="<%= product.imageURL%>" alt="<%=product.title %>">
                 </div>
                 <div class="card__content">
-                    <h2>Count = <%=product.qty%></h2>
-                    <h2 class="product__price">$<%=product.productData.price%></h2>
-                    <p class="product__description"><%=product.productData.description%></p>
+                    <h2>Count = <%=product.quantity%></h2>
+                    <h2 class="product__price">$<%=product.price%></h2>
+                    <p class="product__description"><%=product.description%></p>
                 </div>
                
                 <div class="card__actions">
                    <!-- <a class="btn" href="/admin/edit-product/<%=product.id%>?edit=true">Edit</a> --->
-                    <form method="POST" action="/deleteFromCart/<%=product.productData.id%>">
+                    <form method="POST" action="/deleteFromCart/<%=product._id%>">
                     <button class="btn" type="submit"> Delete</button>
                     </form>
                 </div>
             </article>
-       
+            
             <%}%>
         </div>
-        
+        <form action="/create-order" method="POST">
+            <button type ="submit" class="btn"> Order Now! </button>
+        </form>
         <% } else {%>
             <h1>No Products</h1>
             <% } %>

@@ -33,7 +33,7 @@
         </div>
             
         <button type="submit"> <%if(editMode){%> Update Product <% } else {%> Add Product <%}%></button>
-        <% if(editMode) {%> <input type="hidden"  name ="productID" value="<%=product.id%>"> <% }%>
+        <% if(editMode) {%> <input type="hidden"  name ="productID" value="<%=product._id%>"> <% }%>
         </form>
         
     </main>

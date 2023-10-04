@@ -1,32 +1,127 @@
-const Sequelize = require('sequelize')
+const getDb=require('../utils/database').getDb
+const mongodb=require('mongodb')
+class Product{
 
-const sequelize = require('../utils/database')
 
-
-const Product=sequelize.define('product',{
-    id:{
-        type:Sequelize.INTEGER,
-        autoIncrement: true,
-        primaryKey:true,
-        allowNull: false
-    },
-    title:Sequelize.STRING,
-    description:{
-        type:Sequelize.STRING,
-        allowNull: false
-    },
-    price:{
-        type:Sequelize.DOUBLE,
-        allowNull:false
-    },
-    imageURL:{
-        type:Sequelize.STRING,
-        allowNull: false
+    constructor(title,price,imageURL,description, _id=null,UserId){
+        this.title=title
+        this.price=price
+        this.imageURL=imageURL
+        this.description=description
+        if(_id){
+        this._id=new mongodb.ObjectId(_id)
+        }
+        this.UserId=UserId
+    }
+    save(){
+        const db=getDb()
+        let dbOb;
+        if(this._id){
+            //update
+            dbOb = db.collection('products').updateOne({_id: this._id}, {$set : this});
+        }
+        else{
+            dbOb= db.collection('products').insertOne(this)
+        }
+        return dbOb.then(result=>{
+            console.log(result)
+        }).catch(err=>{
+            console.log(err)
+        })
     }
 
-})
+    static fetchAll(){
+        const db = getDb()
+        return db.collection('products').find().toArray().then(products=>{
+          //  console.log(products)
+            return products
+        });
+    }
 
-module.exports = Product
+    static getProduct(prodId){
+        const db = getDb()
+        console.log("Before prod id print")
+        console.log(prodId)
+        console.log("After prod id print")
+        return db.collection('products').find({_id:new mongodb.ObjectId(prodId)}).toArray().then(product=>{
+            console.log(product)
+            return product
+        })
+
+    }
+
+    static deleteProduct(prodId){
+        const db = getDb()
+
+        return db.collection('products').deleteOne({_id: new mongodb.ObjectId(prodId)}).then(result=>{
+            console.log(result)
+        }).catch(err => { 
+            console.log(err)
+        })
+    }
+}
+
+module.exports=Product
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// const Sequelize = require('sequelize')
+
+// const sequelize = require('../utils/database')
+
+
+// const Product=sequelize.define('product',{
+//     id:{
+//         type:Sequelize.INTEGER,
+//         autoIncrement: true,
+//         primaryKey:true,
+//         allowNull: false
+//     },
+//     title:Sequelize.STRING,
+//     description:{
+//         type:Sequelize.STRING,
+//         allowNull: false
+//     },
+//     price:{
+//         type:Sequelize.DOUBLE,
+//         allowNull:false
+//     },
+//     imageURL:{
+//         type:Sequelize.STRING,
+//         allowNull: false
+//     }
+
+// })
+
+// module.exports = Product
 
 
 

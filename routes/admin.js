@@ -17,10 +17,6 @@ router.get('/edit-product/:ProductID',ProductPage.getEditProduct)
 
 router.post('/edit-product/',ProductPage.updateProduct)
 
-// router.post('/edit-product/:productID',(req,res)=>{
-//     console.log(req.params.productID)
-//     res.redirect('/')
-// })
 
 router.get('/products',ProductPage.getAdminProductsPage)
 
