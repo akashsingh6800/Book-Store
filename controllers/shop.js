@@ -23,7 +23,7 @@ exports.displayProductPage=(req,res)=>{
     // .then(([rows,fields])=>{
     //   res.render('shop/product-list.ejs',{prods:rows,pageTitle:"All Products",path:"/products"})
     // })
-    Product.fetchAll().then((product)=>{
+    Product.find().then((product)=>{
       //console.log(product)
       res.render('shop/product-list.ejs',{prods:product,pageTitle:"All Products",path:"/products"})
     }).catch((err)=>{
@@ -192,7 +192,7 @@ exports.getProducts=(req,res)=>{
 
 exports.getIndex=(req,res)=>{
 
-  Product.fetchAll().then((product)=>{
+  Product.find().then((product)=>{
    // console.log(product)
     res.render('shop/index',{prods:product,pageTitle:"Shop",path:"/index"})
   }).catch((err)=>{
@@ -240,9 +240,9 @@ exports.getProductDetail=(req,res)=>{
   // })
   
 
-  Product.getProduct(req.params.productID).then(product=>{
+  Product.findById(req.params.productID).then(product=>{
     console.log("In product detail page")
-    res.render('shop/product-detail',{prod:product[0],path:'/product-detail',pageTitle:product.title})
+    res.render('shop/product-detail',{prod:product,path:'/product-detail',pageTitle:product.title})
   })
 
 }

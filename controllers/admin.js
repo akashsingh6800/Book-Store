@@ -12,10 +12,10 @@ exports.getAddProductPage=(req,res,next)=>{
 
 exports.postAddProductPage=(req,res,next)=>{
   
-  const product=new Product(req.body.title,req.body.price,req.body.imageURL,req.body.description, null, req.user._id)
+  const product=new Product({title:req.body.title,price:req.body.price,imageURL:req.body.imageURL,description:req.body.description})
   product.save().then(result=>{
     res.redirect('/admin/products')
-  })
+  }).catch(err=> console.log(err))
 }
 
 //  exports.postAddProductPage=(req,res,next)=>{
@@ -92,11 +92,20 @@ exports.updateProduct =(req,res)=>{
   // })
 
 
-  const product = new Product(req.body.title, req.body.price, req.body.imageURL, req.body.description, req.body.productID, req.user._id)
-  product.save().then(result=>{
+  // const product = new Product(req.body.title, req.body.price, req.body.imageURL, req.body.description, req.body.productID, req.user._id)
+  // product.save().then(result=>{
+  //   res.redirect('/admin/products')
+  // }).catch(err => { console.log(err)})
+  Product.findById(req.body.productID).then(product=>{
+    product.title=req.body.title
+    product.price=req.body.price
+    product.description=req.body.description
+    product.imageURL=req.body.imageURL
+     
+    return product.save()
+  }).then( product=>{
     res.redirect('/admin/products')
   }).catch(err => { console.log(err)})
-
 
 }
 
@@ -117,7 +126,7 @@ exports.getAdminProductsPage=(req,res)=>{
   //     console.log(err)
   //   })
 
-  Product.fetchAll().then(product=>{
+  Product.find().then(product=>{
     res.render('admin/products',{prods:product,path:'/admin/products',pageTitle:'Admin Products'})
   }).catch(err=>{ console.log(err)})
 
@@ -132,10 +141,10 @@ exports.getAdminProductsPage=(req,res)=>{
     const editMode=req.query.edit
     const prodID=req.params.ProductID
 
-    Product.getProduct(prodID).then(product=>{
+    Product.findById(prodID).then(product=>{
       console.log("In Edit PRodut")
       console.log(product)
-      res.render('admin/edit-product',{product:product[0], pageTitle:"Update Product", path : "/admin/edit-product", editMode:editMode})
+      res.render('admin/edit-product',{product:product, pageTitle:"Update Product", path : "/admin/edit-product", editMode:editMode})
     })
   //   req.user.getProducts({where: {id:prodID}})
   //  // Product.findByPk(req.params.ProductID)
@@ -159,7 +168,7 @@ exports.getAdminProductsPage=(req,res)=>{
 exports.deleteProduct=(req,res)=>{
 
 
-Product.deleteProduct(req.params.productID).then(result=>{
+Product.findByIdAndRemove(req.params.productID).then(result=>{
   res.redirect('/admin/products')
 })
 
