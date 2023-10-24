@@ -3,9 +3,11 @@ const express = require('express');
 
 const mongoConnect=require('./utils/database').mongoConnect
 const path=require('path')
-const User=require('./model/user').User
+const User=require('./model/user')
 const mongoose = require('mongoose')
-
+const session=require('express-session')
+const MongoDBStore = require('connect-mongodb-session')(session)
+const flash = require('connect-flash')
 // const Product = require('./model/product')
 // const User = require('./model/user')
 // const Cart = require('./model/cart')
@@ -15,12 +17,17 @@ const mongoose = require('mongoose')
 
 //const routeDir = require('./utils/path')
 
+const MONGODB_URI = 'mongodb+srv://akashsingh6800:guyKmCX2R5Qc7VLZ@cluster0.fd4i3ci.mongodb.net/shop'
 const app=express();
-
+const store = new MongoDBStore({
+ uri: MONGODB_URI, 
+ collection: 'sessions'
+});
 
  const pageNotFound=require('./controllers/pageNotFound')
  const adminRoutes=require('./routes/admin')
 const shopRoutes=require('./routes/shop')
+const authRoutes = require('./routes/auth')
 
 // db.execute('SELECT * From products')
 // .then((result)=>{clea
@@ -39,12 +46,38 @@ app.set('views','views');
 
 app.use(express.urlencoded({extended:true}))
 app.use(express.static(path.join(__dirname,'public')))
+app.use(session({secret:"my secret", saveUninitialized:false,resave:false, store:store}))
+
+
+app.use((req,res,next)=>{
+  if(!req.session.user){
+    return next()
+  }
+User.findById(req.session.user._id).then(user=>{
+
+  req.user= user;
+  next()
+
+
+}).catch(err=>{
+  console.log(err)
+})
+
+
+
+})
+app.use(flash());
+app.use((req,res,next)=>{
+
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  next()
+})
 
 // app.use((req,res,next)=>{
 
-//   User.findById("6519b4e1640842e2aefe98fb").then(user=>{
-//     req.user=new User(user.name,user.email,user.contact,user._id,user.cart)
-    
+//   User.findById("652aabc06af76cfbb87370a5").then(user=>{
+//     req.user=user
+  
 //     next()
 //   }).catch(err=>{ 
 //     console.log(err)
@@ -61,13 +94,22 @@ app.use(express.static(path.join(__dirname,'public')))
 
  app.use('/admin',adminRoutes.routes);
 app.use(shopRoutes);
+app.use(authRoutes);
 
-// app.use(pageNotFound.pageNotFound)
+app.use(pageNotFound.pageNotFound)
 
 
 
 
 mongoose.connect("mongodb+srv://akashsingh6800:guyKmCX2R5Qc7VLZ@cluster0.fd4i3ci.mongodb.net/shop?retryWrites=true&w=majority").then(result=>{
+
+//  User.findOne().then(user=>{
+//   if(!user){
+//     const user= new User({name: "Akash", email:"akashsingh6800@gmail.com", cart:{items:[]}})
+//     user.save();
+//   }
+//  });
+
   app.listen(3000)
 }).catch(err=>{
   console.log(err)

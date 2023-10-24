@@ -12,20 +12,20 @@
               
             <article class="card product-item">
                 <header class="card__header">
-                    <h1 class="product__title"><%=product.title %></h1>
+                    <h1 class="product__title"><%=product.productID.title %></h1>
                 </header>
                 <div class="card__image">
                     <img src="<%= product.imageURL%>" alt="<%=product.title %>">
                 </div>
                 <div class="card__content">
                     <h2>Count = <%=product.quantity%></h2>
-                    <h2 class="product__price">$<%=product.price%></h2>
-                    <p class="product__description"><%=product.description%></p>
+                    <h2 class="product__price">$<%=product.productID.price%></h2>
+                    <p class="product__description"><%=product.productID.description%></p>
                 </div>
                
                 <div class="card__actions">
                    <!-- <a class="btn" href="/admin/edit-product/<%=product.id%>?edit=true">Edit</a> --->
-                    <form method="POST" action="/deleteFromCart/<%=product._id%>">
+                    <form method="POST" action="/deleteFromCart/<%=product.productID._id%>">
                     <button class="btn" type="submit"> Delete</button>
                     </form>
                 </div>

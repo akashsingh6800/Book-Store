@@ -1,3 +1,107 @@
+const Product= require('./product')
+
+const mongoose = require('mongoose');
+
+const Schema = mongoose.Schema
+
+const userSchema = new Schema({
+    
+    email:{
+        type:String,
+        required: true
+    },
+    password:{
+        type:String,
+        require:true
+    },
+    resetToken: String,
+    resetTokenExpiration: Date,
+    cart:{
+        items:[{productID:{type: Schema.Types.ObjectId, ref:'Product' , required: true}, quantity:{ type: Number, required: true}}]
+    }
+
+
+})
+
+
+userSchema.methods.addToCart=function(product){
+    console.log("Before product print")
+    console.log(product)
+    console.log("After product print")
+     let newQuantity=1
+        const updateCartItem=[...this.cart.items]
+        const cartProductIndex=this.cart.items.findIndex(cp=>{
+            return cp.productID.toString() === product._id.toString()
+        })
+
+        if(cartProductIndex>=0){
+            newQuantity=this.cart.items[cartProductIndex].quantity+1
+            updateCartItem[cartProductIndex].quantity=newQuantity
+        }
+        else{
+            updateCartItem.push({productID: product._id, quantity:1})
+        }
+
+        const updatedCart={items:updateCartItem}
+
+        this.cart=updatedCart
+        return this.save()
+
+
+}
+
+userSchema.methods.removeFromCart=function(prodID){
+    const updatedCartItems= [...this.cart.items];
+
+        const findIndex=updatedCartItems.findIndex(p=>{
+            return p.productID.toString() === prodID.toString()
+        })
+        console.log(findIndex)
+        if(findIndex>=0){
+            updatedCartItems.splice(findIndex,1)
+        }
+    
+        const updatedCart={items:updatedCartItems}
+        this.cart=updatedCart
+        console.log(updatedCart)
+
+        return this.save()
+}
+
+userSchema.methods.DeleteCart=function(){
+
+    this.cart= {items:[]}
+
+    return this.save()
+}
+
+// userSchema.methods.getCart=function(){
+//         console.log(this.cart.items)
+//         const cartItems = this.cart.items
+//         const products= cartItems.map(p=>{
+//             return Product.findById(p.productID)
+//         })
+//         console.log("Before printing product")
+//         console.log(products)
+//         console.log("After Printing Product")
+
+//        return products.map(p=>{
+//             return{
+//                 ...p,
+//                 quantity: this.cart.items.find(i=>{
+//                     return i.productID.toString() === p._id.toString()
+//                 }).quantity
+//             }
+//         })
+
+        
+
+        
+// }
+
+module.exports= mongoose.model('User',userSchema);
+
+
 
 // const getDb=require('../utils/database').getDb
 // const mongodb=require('mongodb')

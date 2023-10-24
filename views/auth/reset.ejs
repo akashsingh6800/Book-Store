@@ -1,0 +1,26 @@
+
+<%- include('../includes/header.ejs') %>
+<link rel="stylesheet" href="/css/main.css">
+
+
+</head>
+<body>
+    <%- include('../includes/navigation.ejs') %>
+
+    <main>
+        <% if(errorMessage){ %>
+        <div class="user-message user-message--error"><%= errorMessage%></div>
+        <% }%>
+        <form class="login-form" action ="/reset" method ="POST">
+           <div class="form-control">
+            <label form="email">E-Mail</label>
+            <input type="email" name='email' id="email">
+                
+        </div>
+        <button type="submit">Reset Password</button>
+        </form>
+        
+    </main>
+
+
+<%- include('../includes/end.ejs') %></body>

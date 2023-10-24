@@ -25,7 +25,7 @@ main{
 .main-header__item-list{
     list-style: none;
     margin:0;
-    padding:0;
+    padding:10px;
     display:flex;
 }
 .main-header_item{
@@ -44,5 +44,14 @@ main{
 .main-header_item a.active{
     color:rgb(18, 14, 228)
 }
+
+.user-message--error{
+
+    border-color: red;
+    background: rgb(255, 176, 176);
+    color: red
+
+}
+
 
 
